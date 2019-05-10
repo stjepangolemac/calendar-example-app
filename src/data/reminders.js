@@ -1,32 +1,33 @@
-import React, { useState } from 'react'
+import React from 'react'
 
-const { Provider, Consumer } = React.createContext([])
+import { useReminders } from '../utils/hooks'
+
+const { Provider, Consumer } = React.createContext()
 
 const RemindersProvider = ({ children }) => {
-  const [reminders, setReminders] = useState([])
+  const [reminders, methods] = useReminders()
 
-  const findNextId = () => Math.max(reminders.map(r => r.id)) + 1
-
-  const value = {
-    data: reminders,
-    create: (text, date, color) =>
-      setReminders([
-        ...reminders,
-        { id: findNextId(reminders), text, date, color },
-      ]),
-    read: id => reminders.find(r => r.id === id),
-    update: (id, data) =>
-      reminders.map(r => (r.id === id ? { ...r, ...data } : r)),
-    delete: id => reminders.map(r => (r.id === id ? null : r)).filter(r => !!r),
-  }
-
-  return <Provider value={value}>{children}</Provider>
+  return <Provider value={{ data: reminders, ...methods }}>{children}</Provider>
 }
 
-const GetReminders = ({ render }) => (
+export default RemindersProvider
+
+export const GetAllReminders = ({ render }) => (
   <Consumer>{value => render(value.data)}</Consumer>
 )
 
-const CreateReminder = ({ render }) => (
-  <Consumer>{value => render(value.data)}</Consumer>
+export const CreateReminder = ({ render }) => (
+  <Consumer>{value => render(value.create)}</Consumer>
+)
+
+export const GetOneReminder = ({ render }) => (
+  <Consumer>{value => render(value.read)}</Consumer>
+)
+
+export const UpdateReminder = ({ render }) => (
+  <Consumer>{value => render(value.update)}</Consumer>
+)
+
+export const DeleteReminder = ({ render }) => (
+  <Consumer>{value => render(value.delete)}</Consumer>
 )
