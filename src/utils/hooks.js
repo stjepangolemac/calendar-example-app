@@ -1,11 +1,16 @@
 import { useState } from 'react'
-import { startOfMonth, getDaysInMonth, addDays, getDay } from 'date-fns'
+import {
+  startOfMonth,
+  getDaysInMonth,
+  addDays,
+  getDay,
+  isSameDay,
+} from 'date-fns'
 
-export const useCalendar = () => {
-  const today = new Date()
-  const start = startOfMonth(today)
+export const useCalendar = date => {
+  const start = startOfMonth(date)
   const startPad = getDay(start)
-  const days = getDaysInMonth(today)
+  const days = getDaysInMonth(date)
 
   const daysDates = [...Array(days)].map((_, i) => addDays(start, i))
 
@@ -14,14 +19,17 @@ export const useCalendar = () => {
 
 export const useReminders = () => {
   const storageKey = 'reminders'
-  const initialReminders = localStorage.getItem(storageKey) || []
+  const initialReminders = JSON.parse(localStorage.getItem(storageKey)) || []
   const [reminders, actualSetReminders] = useState(initialReminders)
 
   const setReminders = rs => {
-    localStorage.setItem(storageKey, rs)
+    localStorage.setItem(storageKey, JSON.stringify(rs))
     actualSetReminders(rs)
   }
-  const findNextId = () => Math.max(reminders.map(r => r.id)) + 1
+  const findNextId = () => {
+    const max = Math.max(...reminders.map(r => r.id))
+    return max < 0 ? 0 : max + 1
+  }
 
   return [
     reminders,
@@ -31,16 +39,14 @@ export const useReminders = () => {
           ...reminders,
           { id: findNextId(reminders), text, date, color },
         ]),
-      read: id => reminders.find(r => r.id === id),
+      get: id => reminders.find(r => r.id === id),
       update: (id, data) =>
         setReminders(reminders.map(r => (r.id === id ? { ...r, ...data } : r))),
       delete: id =>
         setReminders(
           reminders.map(r => (r.id === id ? null : r)).filter(r => !!r)
         ),
-
-      // TODO
-      getByDate: () => null,
+      getForDate: date => reminders.filter(r => isSameDay(date, r.date)),
     },
   ]
 }

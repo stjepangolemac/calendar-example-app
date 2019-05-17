@@ -12,22 +12,26 @@ const RemindersProvider = ({ children }) => {
 
 export default RemindersProvider
 
-export const GetAllReminders = ({ render }) => (
-  <Consumer>{value => render(value.data)}</Consumer>
+export const GetAllReminders = ({ children }) => (
+  <Consumer>{value => children(value.data)}</Consumer>
 )
 
-export const CreateReminder = ({ render }) => (
-  <Consumer>{value => render(value.create)}</Consumer>
+export const CreateReminder = ({ children }) => (
+  <Consumer>{value => children(value.create)}</Consumer>
 )
 
-export const GetOneReminder = ({ render }) => (
-  <Consumer>{value => render(value.read)}</Consumer>
+export const GetOneReminder = ({ children }) => (
+  <Consumer>{value => children(value.get)}</Consumer>
 )
 
-export const UpdateReminder = ({ render }) => (
-  <Consumer>{value => render(value.update)}</Consumer>
+export const GetRemindersForDate = ({ children }) => (
+  <Consumer>{value => children(value.getForDate)}</Consumer>
 )
 
-export const DeleteReminder = ({ render }) => (
-  <Consumer>{value => render(value.delete)}</Consumer>
+export const UpdateReminder = ({ children }) => (
+  <Consumer>{value => children(value.update)}</Consumer>
+)
+
+export const DeleteReminder = ({ children }) => (
+  <Consumer>{value => children(value.delete)}</Consumer>
 )

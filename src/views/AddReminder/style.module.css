@@ -1,0 +1,11 @@
+.form {
+  font-size: 1rem;
+}
+
+.form label {
+  display: block;
+}
+
+.form input {
+  margin-bottom: 0.5rem;
+}

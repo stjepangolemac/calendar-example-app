@@ -3,3 +3,12 @@
   grid-template-columns: repeat(7, 1fr);
   grid-template-rows: repeat(5, 5rem);
 }
+
+.switcher {
+  display: flex;
+  align-items: center;
+}
+
+.switcher button:first-of-type {
+  margin-left: 1rem;
+}
